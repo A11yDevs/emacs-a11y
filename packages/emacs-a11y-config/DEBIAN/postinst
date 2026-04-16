@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+# postinst: Script executado após a instalação do pacote
+# Não modifica configurações pessoais do usuário
+
+case "$1" in
+    configure)
+        echo "Configurando a11y-emacs-config..."
+
+        # Garantir que o diretório de dados existe e tem permissões corretas
+        if [ -d /usr/share/a11y-emacs ]; then
+            chmod 755 /usr/share/a11y-emacs
+            chmod -R 755 /usr/share/a11y-emacs/*
+        fi
+
+        echo "Instalação concluída com sucesso!"
+        echo "Configuração instalada em: /usr/share/a11y-emacs/"
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+    *)
+        echo "postinst chamado com argumento desconhecido: $1" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

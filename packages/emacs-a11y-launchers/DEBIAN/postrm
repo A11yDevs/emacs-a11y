@@ -1,0 +1,46 @@
+#!/bin/bash
+set -e
+
+# postrm: Script executado após remover o pacote
+
+case "$1" in
+    purge)
+        echo "Removendo configuração de emacs-a11y-launchers..."
+
+        # Remover symlink criado no postinst
+        if [ -L /usr/local/bin/emacs-a11y ]; then
+            rm -f /usr/local/bin/emacs-a11y
+            echo "Symlink /usr/local/bin/emacs-a11y removido"
+        fi
+
+        # Remover alias do profile.d
+        if [ -f /etc/profile.d/a11y-emacs-alias.sh ]; then
+            rm -f /etc/profile.d/a11y-emacs-alias.sh
+            echo "Alias de profile.d removido"
+        fi
+
+        # Remover sudoers (opcional - deixar comentado se preferir manter permissões)
+        # if [ -f /etc/sudoers.d/a11ydevs-espeakup ]; then
+        #     rm -f /etc/sudoers.d/a11ydevs-espeakup
+        #     echo "Arquivo sudoers removido"
+        # fi
+
+        # Remover usuário/grupo a11ydevs (opcional - deixar comentado se preferir manter)
+        # if getent passwd a11ydevs > /dev/null 2>&1; then
+        #     userdel a11ydevs 2>/dev/null || true
+        #     echo "Usuário a11ydevs removido"
+        # fi
+        # if getent group a11ydevs > /dev/null 2>&1; then
+        #     groupdel a11ydevs 2>/dev/null || true
+        #     echo "Grupo a11ydevs removido"
+        # fi
+        ;;
+    remove|upgrade|failed-upgrade)
+        ;;
+    *)
+        echo "postrm chamado com argumento desconhecido: $1" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

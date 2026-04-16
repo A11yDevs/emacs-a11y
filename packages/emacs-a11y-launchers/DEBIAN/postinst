@@ -1,0 +1,72 @@
+#!/bin/bash
+set -e
+
+# postinst: Script executado após a instalação do pacote de lançadores
+
+case "$1" in
+    configure)
+        echo "Configurando emacs-a11y-launchers..."
+
+        # Garantir que scripts de lançamento têm permissões corretas
+        if [ -d /usr/share/a11y-emacs ]; then
+            chmod 755 /usr/share/a11y-emacs/*.sh 2>/dev/null || true
+        fi
+
+        # Criar usuário e grupo a11ydevs se não existir
+        if ! getent group a11ydevs > /dev/null 2>&1; then
+            echo "Criando grupo a11ydevs..."
+            groupadd a11ydevs 2>/dev/null || true
+        fi
+
+        if ! getent passwd a11ydevs > /dev/null 2>&1; then
+            echo "Criando usuário a11ydevs..."
+            useradd -r -M -N -g a11ydevs a11ydevs 2>/dev/null || true
+        fi
+
+        # Criar arquivo de sudoers para permissões NOPASSWD de espeakup
+        SUDOERS_FILE="/etc/sudoers.d/a11ydevs-espeakup"
+        if [ ! -f "${SUDOERS_FILE}" ]; then
+            echo "Configurando sudoers para a11ydevs..."
+            cat > "${SUDOERS_FILE}" << 'EOF'
+# Permissões para controlar o serviço espeakup
+# Usadas pelo launcher emacs-a11y para pausar/retomar leitura de tela
+%a11ydevs ALL=(ALL) NOPASSWD: /bin/systemctl stop espeakup
+%a11ydevs ALL=(ALL) NOPASSWD: /bin/systemctl start espeakup
+EOF
+            chmod 440 "${SUDOERS_FILE}"
+        fi
+
+        # Criar link simbólico para launcher principal em /usr/local/bin
+        if [ ! -e /usr/local/bin/emacs-a11y ]; then
+            echo "Criando symlink /usr/local/bin/emacs-a11y..."
+            ln -sf /usr/share/a11y-emacs/emacs-a11y.sh /usr/local/bin/emacs-a11y
+        fi
+
+        # Criar alias emacs disponível para todos os shells interativos
+        PROFILE_D_FILE="/etc/profile.d/a11y-emacs-alias.sh"
+        if [ ! -f "${PROFILE_D_FILE}" ]; then
+            echo "Criando alias emacs para emacs-a11y..."
+            cat > "${PROFILE_D_FILE}" << 'EOF'
+#!/bin/bash
+# Alias para executar emacs-a11y simplificadamente
+alias emacs='emacs-a11y'
+EOF
+            chmod 644 "${PROFILE_D_FILE}"
+        fi
+
+        echo "Lançadores instalados em: /usr/share/a11y-emacs/"
+        echo "Symlink em: /usr/local/bin/emacs-a11y"
+        echo "Alias 'emacs' configurado para rodar: emacs-a11y"
+        echo "Usuário a11ydevs tem permissões NOPASSWD para:"
+        echo "  - sudo systemctl stop espeakup"
+        echo "  - sudo systemctl start espeakup"
+        ;;
+    abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
+    *)
+        echo "postinst chamado com argumento desconhecido: $1" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

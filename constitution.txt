@@ -1,0 +1,58 @@
+Nome do projeto
+================
+
+emacs-a11y
+
+
+Descrição curta
+===============
+
+Uma configuração/distribuição acessível do Emacs para pessoas com deficiência visual, com foco em uso prático, portabilidade e preservação da configuração pessoal do usuário.
+
+
+Objetivos
+=========
+
+1. Fornecer um Emacs acessível para pessoas com deficiência visual.
+2. Garantir portabilidade para Debian e Ubuntu.
+3. Distribuir pacotes universais, independentes da plataforma de execução, funcionando em máquina física, VM ou WSL.
+4. Utilizar /etc/skel para provisionar configuração inicial apenas para novos usuários, sem afetar usuários existentes.
+5. Disponibilizar um launcher principal chamado emacs-a11y.
+6. Permitir que o launcher emacs-a11y sobreponha o comando emacs por alias ou link simbólico, quando isso fizer sentido na instalação.
+7. Manter a personalização pessoal do usuário em um arquivo opcional user-init.el, carregado apenas quando existir.
+
+
+Regras
+======
+
+1. Nunca sobrepor automaticamente a configuração pessoal do usuário em ~/.emacs.d.
+2. A configuração oficial do projeto deve ficar separada da configuração pessoal do usuário.
+3. Integrações com a configuração pessoal devem ser opcionais e não destrutivas.
+4. O sistema deve priorizar segurança, previsibilidade e facilidade de manutenção.
+5. O projeto deve evitar acoplamento desnecessário a VirtualBox, WSL ou qualquer plataforma específica.
+6. Sempre que possível, a solução deve favorecer portabilidade, modularidade e atualização incremental por pacotes.
+
+
+Diretrizes de configuração
+==========================
+
+1. A configuração central do projeto deve ser instalada em um diretório próprio, como /usr/share/a11y-emacs/ ou equivalente.
+2. O launcher emacs-a11y deve carregar a configuração central sem exigir alteração obrigatória em ~/.emacs.d.
+3. O usuário pode ter um arquivo de personalização opcional, como ~/.config/a11y-emacs/user-init.el.
+4. Caso user-init.el exista, ele pode ser carregado ao final da configuração principal para permitir customizações locais.
+5. O uso de /etc/skel deve ser restrito à criação de novos usuários ou imagens-base, sem modificar usuários já existentes.
+
+
+Diretrizes de distribuição
+==========================
+
+1. A distribuição principal deve priorizar pacotes .deb compatíveis com Debian e Ubuntu.
+2. A solução deve ser independente de estar rodando em bare metal, VM ou WSL.
+3. O formato OVA pode ser usado como meio de distribuição inicial de uma imagem pronta, mas não deve ser o único mecanismo de distribuição.
+4. Atualizações futuras devem, preferencialmente, ocorrer por meio de pacotes menores, sem necessidade de redistribuir a imagem completa.
+
+
+Princípio central
+=================
+
+O projeto emacs-a11y deve oferecer um ambiente acessível, portátil e reutilizável, respeitando sempre a autonomia do usuário e preservando sua configuração pessoal.

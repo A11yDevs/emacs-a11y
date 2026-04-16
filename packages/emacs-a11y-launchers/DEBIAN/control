@@ -1,0 +1,9 @@
+Package: emacs-a11y-launchers
+Version: 0.1.0
+Architecture: all
+Maintainer: Akira <akira@example.com>
+Description: Lançadores e integrações para Emacs a11y
+ Fornece scripts lançadores especializados para iniciar o Emacs com
+ suporte a tecnologias assistivas, integração com espeakup e utilitários
+ de controle de áudio.
+Depends: emacs-a11y-config, bash

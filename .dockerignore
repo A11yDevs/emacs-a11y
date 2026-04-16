@@ -1,0 +1,10 @@
+.git
+.gitignore
+.draft
+.claude
+node_modules
+__pycache__
+*.pyc
+*.o
+*.so
+.DS_Store

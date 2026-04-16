@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+# prerm: Script executado antes de remover o pacote
+
+case "$1" in
+    remove|upgrade)
+        echo "Preparando remoção de emacs-a11y-launchers..."
+        ;;
+    deconfigure)
+        ;;
+    *)
+        echo "prerm chamado com argumento desconhecido: $1" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
