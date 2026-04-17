@@ -18,3 +18,5 @@ dist/
 
 .draft/
 .reports/
+
+.DS_Store
