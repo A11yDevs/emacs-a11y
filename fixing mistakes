@@ -1,0 +1,85 @@
+Compilado com algumas correções aplicadas na instalação de pacotes do emacs e emacspeak realizada no WSL Debian e Debian VM.
+Esses comandos e correções já consideram que tando o sistema do WSL Debian e Debian VM estão devidamente instalados na máquina.
+
+Erros relacionados a instalação dos pacotes no WSL Debian
+
+Ao usar um dos comandos de instalação dos pacotes:
+
+-sudo dpkg -i dist/emacs-a11y-config.deb
+-sudo dpkg -i dist/emacs-a11y-launchers.deb
+-sudo dpkg -i dist/emacspeak.deb
+
+O terminal do WSL Debian vai acusar o seguinte erro: "No such file or directory"
+
+Isso indica que, dentro da pasta onde é executado a instalação (~, que é a pasta "home"), não existe uma pasta chamada dist contendo um arquivo do tipo emacs.deb.
+
+WSL Debian (Comandos para instalação):
+
+"Atualização de dependências do sistema"
+-sudo apt update
+
+"Entrar na pasta pra a instalação - Certifique-se de que o local dos pacotes (emacs/emacspeak.deb) esteja correto"
+-cd /mnt/c/Users/SEU_USUÁRIO/Downloads/ 
+
+"Verificação do local dos pacotes"
+-ls emacs*
+
+"Instala todos os pacotes de uma única vez"
+-sudo apt install ./emacs-a11y-config.deb ./emacs-a11y-launchers.deb ./emacspeak.deb
+
+"Atualização de dependências do sistema (Opcional)"
+-sudo apt install -f
+
+"Sair da pasta em que realizou as instalações"
+-cd
+
+"Iniciar o emacs com configurações básicas de leitura e terminal simplificado"
+-emacs-a11y
+
+Debian VM (Comandos de instalação e correções de desempenho):
+
+No VirtualBox, vá em Configurações da sua VM Debian.
+Vá em Rede -> Adaptador 1.
+Em "Conectado a:", mude de "NAT" para Placa em modo Bridge (ou Bridged Adapter).
+Ligue a VM.
+
+"Dentro do Debian VM acesse o ip do sistema"
+ip addr
+
+"No Prompt De Comando ou PowerShell"
+
+ssh seu_usuário@ip_da_vm (Aceite a conexão e digite a senha.)
+
+"Entre como root para configurar o sudo"
+su -
+apt update && apt install -y sudo git build-essential dkms linux-headers-$(uname -r)
+
+"Adicione seu usuário ao grupo sudo e áudio"
+usermod -aG sudo SEU_USUÁRIO
+usermod -aG audio SEU_USUÁRIO
+
+"Saia do root para aplicar as permissões"
+exit
+
+"Cria a pasta e monta o CD"
+sudo mkdir -p /media/cdrom
+sudo mount /dev/sr0 /media/cdrom
+
+"Instala os drivers (Ignore avisos sobre "Windowing System")"
+sudo sh /media/cdrom/VBoxLinuxAdditions.run
+
+"Reinicie para ativar os módulos de kernel"
+sudo reboot
+
+"Entre na pasta onde estão os arquivos"
+cd /home/SEU_USUÁRIO/
+
+"Instalação forçada dos pacotes locais"
+sudo dpkg -i emacs-a11y-config.deb emacs-a11y-launchers.deb emacspeak.deb
+
+"CORREÇÃO DE DEPENDÊNCIAS (Baixa o Emacs, espeak, etc automaticamente)"
+sudo apt install -f -y
+
+"Otimização do Virtual Box - Desativar o Hypervisor (isso afeta o sistema do WSL)"
+dism.exe /online /disable-feature /featurename:Microsoft-Hyper-V-All /featurename:VirtualMachinePlatform /featurename:HypervisorPlatform
+bcdedit /set hypervisorlaunchtype off
