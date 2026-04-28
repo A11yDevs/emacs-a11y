@@ -61,7 +61,7 @@ Após a publicação, baixe os arquivos na página de Releases do repositório.
 
 ## 🗂️ Repositório APT (GitHub Pages)
 
-Além dos assets de release, o projeto publica automaticamente um repositório APT estático no GitHub Pages (branch `gh-pages`) sempre que uma tag `vX.Y.Z` é enviada.
+Além dos assets de release, o projeto publica automaticamente um repositório APT estático no GitHub Pages (branch `gh-pages`).
 
 URL do repositório APT:
 - https://a11ydevs.github.io/emacs-a11y/debian
@@ -74,25 +74,71 @@ Se a URL retornar 404, habilite em GitHub Settings > Pages:
 - Branch: gh-pages
 - Folder: /(root)
 
-Configurar no Debian/Ubuntu:
+### Instalação (Debian/Ubuntu)
+
+1. Limpar configuração anterior (opcional, recomendado):
 
 ```bash
-curl -fsSL https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg | sudo tee /usr/share/keyrings/emacs-a11y-archive-keyring.gpg >/dev/null
-echo "deb [signed-by=/usr/share/keyrings/emacs-a11y-archive-keyring.gpg] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+sudo rm -f /etc/apt/sources.list.d/emacs-a11y.list
+sudo rm -f /usr/share/keyrings/emacs-a11y-archive-keyring.gpg
+```
+
+2. Instalar o keyring do repositório:
+
+```bash
+sudo curl -fsSL https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg -o /usr/share/keyrings/emacs-a11y-archive-keyring.gpg
+```
+
+3. Adicionar o repositório APT:
+
+```bash
+echo "deb [arch=all signed-by=/usr/share/keyrings/emacs-a11y-archive-keyring.gpg] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list >/dev/null
+```
+
+4. Atualizar índice de pacotes:
+
+```bash
 sudo apt update
 ```
 
-Instalar pacotes:
+5. Instalar pacotes:
 
 ```bash
-sudo apt install emacs-a11y-config emacs-a11y-launchers
+sudo apt install -y emacs-a11y-config emacs-a11y-launchers
 ```
 
-Atualizar pacotes:
+6. Validar instalação:
+
+```bash
+dpkg -l | grep -E "emacs-a11y-config|emacs-a11y-launchers"
+```
+
+### Atualização
 
 ```bash
 sudo apt update
 sudo apt upgrade
+```
+
+### Troubleshooting rápido
+
+- Erro de assinatura/chave ausente:
+
+```bash
+sudo curl -fsSL https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg -o /usr/share/keyrings/emacs-a11y-archive-keyring.gpg
+sudo apt update
+```
+
+- Erro "Release file not found":
+    - Aguarde o workflow de publicação do APT finalizar em GitHub Actions e execute `sudo apt update` novamente.
+
+- Erro 404 ao baixar `.deb`:
+    - Normalmente indica metadados em cache local. Execute:
+
+```bash
+sudo apt clean
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt update
 ```
 
 ### Segredos Necessários no GitHub
