@@ -104,7 +104,10 @@ jobs:
           mkdir -p "${POOL_DIR}" "${DIST_DIR}"
           cp dist/*.deb "${POOL_DIR}/"
 
-          apt-ftparchive packages "${POOL_DIR}" > "${DIST_DIR}/Packages"
+          # Gera paths relativos (pool/main/...) no campo Filename do Packages.
+          pushd "${REPO_ROOT}" >/dev/null
+          apt-ftparchive packages "pool/main" > "dists/stable/main/binary-all/Packages"
+          popd >/dev/null
           gzip -9c "${DIST_DIR}/Packages" > "${DIST_DIR}/Packages.gz"
 
           apt-ftparchive \
