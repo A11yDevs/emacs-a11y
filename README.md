@@ -21,6 +21,7 @@ Uma configuração/distribuição acessível do Emacs para pessoas com deficiên
 
 ### Usuários
 - **[Getting Started](docs/getting-started.md)** - Guia de início rápido e instalação
+- **[Validação na VM Debian (APT)](docs/apt-vm-validation.md)** - Teste ponta a ponta de assinatura, install e upgrade
 - **[Estrutura do Projeto](docs/structure.md)** - Resumo técnico e arquitetura
 
 ### Desenvolvedores

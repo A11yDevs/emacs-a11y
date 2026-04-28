@@ -10,6 +10,11 @@ Esta pasta contém toda a documentação detalhada do projeto.
   - Primeiro uso
   - Troubleshooting básico
 
+- **[apt-vm-validation.md](apt-vm-validation.md)** - Validação em VM Debian
+  - Teste de assinatura APT
+  - Instalação via apt install
+  - Verificação de update/upgrade
+
 - **[structure.md](structure.md)** - Entenda a estrutura
   - Arquitetura do projeto
   - Componentes principais
