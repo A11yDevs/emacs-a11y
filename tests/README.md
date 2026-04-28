@@ -45,6 +45,35 @@ Testa se os arquivos têm as permissões corretas.
 bash tests/test-permissions.sh
 ```
 
+### test-packages-integrity.sh
+Valida integridade e funcionamento dos pacotes `.deb` gerados localmente.
+
+**O que valida:**
+- Presença dos pacotes mais recentes em `dist/`
+- Metadados e estrutura (`dpkg-deb --info` e `--contents`)
+- Hash SHA256 dos pacotes
+- Instalação em container limpo
+- Carregamento do `init.el` no Emacs em modo batch
+
+**Uso:**
+```bash
+bash tests/test-packages-integrity.sh
+```
+
+### test-apt-repository.sh
+Valida se o repositório APT publicado no GitHub Pages está funcional.
+
+**O que valida:**
+- Endpoints essenciais (`InRelease`, `Release`, `Packages.gz`, keyring)
+- Índice de pacotes com `Filename` correto (sem `pages/debian/...`)
+- URLs dos `.deb` acessíveis
+- `apt update` e `apt install` em container Debian limpo
+
+**Uso:**
+```bash
+bash tests/test-apt-repository.sh
+```
+
 ## 🚀 Executar Todos os Testes
 
 ```bash
@@ -58,6 +87,8 @@ make docker-test
 bash tests/test-installation.sh
 bash tests/test-emacs-loading.sh
 bash tests/test-permissions.sh
+bash tests/test-packages-integrity.sh
+bash tests/test-apt-repository.sh
 ```
 
 ## 🔄 Fluxo de Testes Recomendado
@@ -74,6 +105,8 @@ bash tests/test-permissions.sh
    bash tests/test-installation.sh
    bash tests/test-emacs-loading.sh
    bash tests/test-permissions.sh
+   bash tests/test-packages-integrity.sh
+   bash tests/test-apt-repository.sh
    ```
 
 3. **Teste Completo:**
@@ -90,6 +123,8 @@ bash tests/test-permissions.sh
 - [ ] Scripts são executáveis
 - [ ] Permissões corretas (755)
 - [ ] Dependências satisfeitas
+- [ ] Integridade dos `.deb` validada
+- [ ] Repositório APT remoto validado
 
 ## 📊 Testes em Docker
 
