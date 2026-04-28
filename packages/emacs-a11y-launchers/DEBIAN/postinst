@@ -23,17 +23,24 @@ case "$1" in
             useradd -r -M -N -g a11ydevs a11ydevs 2>/dev/null || true
         fi
 
-        # Criar arquivo de sudoers para permissões NOPASSWD de espeakup
-        SUDOERS_FILE="/etc/sudoers.d/a11ydevs-espeakup"
-        if [ ! -f "${SUDOERS_FILE}" ]; then
-            echo "Configurando sudoers para a11ydevs..."
-            cat > "${SUDOERS_FILE}" << 'EOF'
+        # Configura sudoers apenas quando sudo estiver presente no sistema.
+        SUDOERS_DIR="/etc/sudoers.d"
+        SUDOERS_FILE="${SUDOERS_DIR}/a11ydevs-espeakup"
+        if command -v sudo > /dev/null 2>&1 || [ -f /etc/sudoers ]; then
+            mkdir -p "${SUDOERS_DIR}"
+
+            if [ ! -f "${SUDOERS_FILE}" ]; then
+                echo "Configurando sudoers para a11ydevs..."
+                cat > "${SUDOERS_FILE}" << 'EOF'
 # Permissões para controlar o serviço espeakup
 # Usadas pelo launcher emacs-a11y para pausar/retomar leitura de tela
 %a11ydevs ALL=(ALL) NOPASSWD: /bin/systemctl stop espeakup
 %a11ydevs ALL=(ALL) NOPASSWD: /bin/systemctl start espeakup
 EOF
-            chmod 440 "${SUDOERS_FILE}"
+                chmod 440 "${SUDOERS_FILE}"
+            fi
+        else
+            echo "sudo não encontrado; pulando configuração de sudoers."
         fi
 
         # Criar link simbólico para launcher principal em /usr/local/bin
@@ -57,9 +64,11 @@ EOF
         echo "Lançadores instalados em: /usr/share/a11y-emacs/"
         echo "Symlink em: /usr/local/bin/emacs-a11y"
         echo "Alias 'emacs' configurado para rodar: emacs-a11y"
-        echo "Usuário a11ydevs tem permissões NOPASSWD para:"
-        echo "  - sudo systemctl stop espeakup"
-        echo "  - sudo systemctl start espeakup"
+        if [ -f "${SUDOERS_FILE}" ]; then
+            echo "Usuário a11ydevs tem permissões NOPASSWD para:"
+            echo "  - sudo systemctl stop espeakup"
+            echo "  - sudo systemctl start espeakup"
+        fi
         ;;
     abort-upgrade|abort-remove|abort-deconfigure)
         ;;

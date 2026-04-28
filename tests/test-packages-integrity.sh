@@ -33,45 +33,46 @@ echo "  - ${CONFIG_PKG}"
 echo "  - ${LAUNCHERS_PKG}"
 echo
 
-echo "◆ Verificando metadados e estrutura dos pacotes..."
-for pkg in "${CONFIG_PKG}" "${LAUNCHERS_PKG}"; do
-  echo "  > $(basename "${pkg}")"
-  dpkg-deb --info "${pkg}" >/dev/null
-  dpkg-deb --contents "${pkg}" >/dev/null
-done
-echo "✓ Metadados e estrutura válidos"
-echo
-
 echo "◆ Hash SHA256 dos pacotes:"
 sha256sum "${CONFIG_PKG}" "${LAUNCHERS_PKG}" | sed 's/^/  /'
 echo
 
-echo "◆ Validando instalação e carregamento em Docker..."
+echo "◆ Validando metadados, instalação e carregamento em Docker..."
 docker run --rm \
+  -e CONFIG_PKG="${CONFIG_PKG}" \
+  -e LAUNCHERS_PKG="${LAUNCHERS_PKG}" \
   -v "$(pwd)":/workspace \
   -w /workspace \
   debian:stable-slim \
-  bash -c "
-    set -euo pipefail
-    apt-get update -qq
-    apt-get install -y -qq emacs-nox bash
+  bash -s <<'SCRIPT'
+set -euo pipefail
 
-    apt-get install -y ./$(printf '%q' "${CONFIG_PKG}") ./$(printf '%q' "${LAUNCHERS_PKG}")
+apt-get update -qq
+apt-get install -y -qq emacs-nox bash dpkg
 
-    dpkg-query -W emacs-a11y-config emacs-a11y-launchers >/dev/null
+echo '  > Verificando metadados e estrutura dos pacotes...'
+dpkg-deb --info "./${CONFIG_PKG}" >/dev/null
+dpkg-deb --contents "./${CONFIG_PKG}" >/dev/null
+dpkg-deb --info "./${LAUNCHERS_PKG}" >/dev/null
+dpkg-deb --contents "./${LAUNCHERS_PKG}" >/dev/null
 
-    test -f /usr/share/a11y-emacs/init.el
-    test -x /usr/share/a11y-emacs/emacs-a11y.sh
-    test -x /usr/share/a11y-emacs/espeakup-start.sh
-    test -x /usr/share/a11y-emacs/espeakup-stop.sh
+apt-get install -y "./${CONFIG_PKG}" "./${LAUNCHERS_PKG}"
 
-    emacs -Q --batch \
-      --load /usr/share/a11y-emacs/init.el \
-      --eval '(princ "init-ok\n")' >/tmp/emacs-a11y-load.log
+dpkg-query -W emacs-a11y-config emacs-a11y-launchers >/dev/null
 
-    grep -q '^init-ok$' /tmp/emacs-a11y-load.log
-    echo '✓ Instalação e carregamento validados no container'
-  "
+test -f /usr/share/a11y-emacs/init.el
+test -x /usr/share/a11y-emacs/emacs-a11y.sh
+test -x /usr/share/a11y-emacs/espeakup-start.sh
+test -x /usr/share/a11y-emacs/espeakup-stop.sh
+
+emacs -Q --batch \
+  --load /usr/share/a11y-emacs/init.el \
+  --eval '(princ "init-ok")' \
+  --eval '(terpri)' >/tmp/emacs-a11y-load.log
+
+grep -q '^init-ok$' /tmp/emacs-a11y-load.log
+echo '✓ Metadados, instalação e carregamento validados no container'
+SCRIPT
 
 echo
 echo "✅ Integridade e funcionamento dos pacotes validados com sucesso"
