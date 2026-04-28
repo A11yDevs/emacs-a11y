@@ -58,6 +58,33 @@ Arquivos publicados em cada release:
 
 Após a publicação, baixe os arquivos na página de Releases do repositório.
 
+## 🗂️ Repositório APT (GitHub Pages)
+
+Além dos assets de release, o projeto publica automaticamente um repositório APT estático no GitHub Pages (branch `gh-pages`) sempre que uma tag `vX.Y.Z` é enviada.
+
+URL do repositório APT:
+- https://a11ydevs.github.io/emacs-a11y/debian
+
+Configurar no Debian/Ubuntu:
+
+```bash
+echo "deb [trusted=yes] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+sudo apt update
+```
+
+Instalar pacotes:
+
+```bash
+sudo apt install emacs-a11y-config emacs-a11y-launchers
+```
+
+Atualizar pacotes:
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
 ### Instalação
 
 ```bash

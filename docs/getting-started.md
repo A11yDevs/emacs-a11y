@@ -6,6 +6,28 @@
 - **bash** 4.0+
 - git (opcional, para controle de versão)
 
+## APT (GitHub Pages)
+
+Para instalar e atualizar com comandos APT padrão, adicione o repositório:
+
+```bash
+echo "deb [trusted=yes] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+sudo apt update
+```
+
+Instale os pacotes:
+
+```bash
+sudo apt install emacs-a11y-config emacs-a11y-launchers
+```
+
+Para manter atualizado:
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
 ## 1️⃣ Validação Inicial
 
 Verifica se a estrutura de pacotes está correta:

@@ -1,0 +1,116 @@
+name: Publish APT Repository (GitHub Pages)
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-apt-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version from tag
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG_NAME="${GITHUB_REF_NAME}"
+
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${TAG_NAME#v}"
+          else
+            VERSION="$(awk '/^VERSION[[:space:]]*:=[[:space:]]*/{print $3; exit}' Makefile)"
+          fi
+
+          if [[ -z "${VERSION}" ]]; then
+            echo "Não foi possível resolver versão para build"
+            exit 1
+          fi
+
+          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
+          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+
+      - name: Sync Debian control versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+
+          sed -i "s/^Version: .*/Version: ${VERSION}/" packages/emacs-a11y-config/DEBIAN/control
+          sed -i "s/^Version: .*/Version: ${VERSION}/" packages/emacs-a11y-launchers/DEBIAN/control
+
+      - name: Build packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          make build VERSION="${{ steps.version.outputs.version }}"
+
+      - name: Install apt tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends apt-utils
+
+      - name: Build static APT repository
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          REPO_ROOT="pages/debian"
+          POOL_DIR="${REPO_ROOT}/pool/main"
+          DIST_DIR="${REPO_ROOT}/dists/stable/main/binary-all"
+
+          mkdir -p "${POOL_DIR}" "${DIST_DIR}"
+          cp dist/*.deb "${POOL_DIR}/"
+
+          apt-ftparchive packages "${POOL_DIR}" > "${DIST_DIR}/Packages"
+          gzip -9c "${DIST_DIR}/Packages" > "${DIST_DIR}/Packages.gz"
+
+          apt-ftparchive \
+            -o APT::FTPArchive::Release::Origin="A11yDevs" \
+            -o APT::FTPArchive::Release::Label="emacs-a11y" \
+            -o APT::FTPArchive::Release::Suite="stable" \
+            -o APT::FTPArchive::Release::Codename="stable" \
+            -o APT::FTPArchive::Release::Architectures="all" \
+            -o APT::FTPArchive::Release::Components="main" \
+            release "${REPO_ROOT}/dists/stable" > "${REPO_ROOT}/dists/stable/Release"
+
+          cat > "${REPO_ROOT}/index.html" <<'HTML'
+          <!doctype html>
+          <html lang="pt-BR">
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>emacs-a11y APT Repository</title>
+            </head>
+            <body>
+              <h1>emacs-a11y APT Repository</h1>
+              <p>Use no Debian/Ubuntu:</p>
+              <pre>echo "deb [trusted=yes] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+sudo apt update
+sudo apt install emacs-a11y-config emacs-a11y-launchers</pre>
+            </body>
+          </html>
+          HTML
+
+          touch pages/.nojekyll
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./pages
+          force_orphan: true
