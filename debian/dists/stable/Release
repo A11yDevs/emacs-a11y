@@ -1,0 +1,23 @@
+Architectures: all
+Codename: stable
+Components: main
+Date: Tue, 28 Apr 2026 19:03:58 +0000
+Label: emacs-a11y
+Origin: A11yDevs
+Suite: stable
+MD5Sum:
+ 9c95e78853e8bd23fec3c52c6b516136              140 Release
+ 1436c5c14fdb798b376d073bf96102d0             1481 main/binary-all/Packages
+ 5a95819285049f43b34328c2d82c8153              838 main/binary-all/Packages.gz
+SHA1:
+ c9bb6d2891eced196a1c7e7655429af4aff467ee              140 Release
+ d5950b2b8789e7a17c642985fb10fe866b52ba54             1481 main/binary-all/Packages
+ 6748335a885e78364285b7d2db8e1b1b42360750              838 main/binary-all/Packages.gz
+SHA256:
+ c23f25400c25b879612a5771944b399dcabbb1692debbf812c9546c300e10d25              140 Release
+ 5cea94ce4e52fe84dc6eda6880b3e4b651116e753416acdc2f47e7aedc135880             1481 main/binary-all/Packages
+ 0914852f9155a92d8e1b4b2f90b92dddeb197f695f0b4d042ac5990327aa30b4              838 main/binary-all/Packages.gz
+SHA512:
+ e38857419b67e1966ffd1a8b4f88de15a18a3d8036d182ced342fdff3c39b7040a4182e64be32c81c10059f2a782cb5b185ca21622d77fb8e544624e3e40b06c              140 Release
+ cd16ad67d2154761d53516a0ca89078bdb2e94a8acea303394148cc3d2ab3e37d1d8b148c9feccdead9d18ed69b8f446ad7ccd2906d90622cdf28c3a052fcd87             1481 main/binary-all/Packages
+ 1fed811661a1bb5390799ea8b29ab4c29a1c30affc3e6a5eacebedc2bf4c345fd6f6b0b66bb359fc7d1a17e93b9c7ed317c80189aa171f7eac41c6f9596597ae              838 main/binary-all/Packages.gz

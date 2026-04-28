@@ -1,0 +1,32 @@
+Package: emacs-a11y-config
+Architecture: all
+Version: 0.1.0
+Maintainer: Akira <akira@example.com>
+Depends: emacs | emacs-nox
+Filename: pool/main/emacs-a11y-config_0.1.0_all.deb
+Size: 7516
+MD5sum: 951e787bb79beb6f65f9cb155fc28e55
+SHA1: a57a4a239c88f07450f528c2276f77df7346a7fe
+SHA256: e8bcb479b53a07aff28febfa876e996cd1d3cb7d219482c7cdd46a5e456da762
+SHA512: a38db7ef868d2fb3ffe57bbca7f6e9bd7bcfbb70ef22bf5d6d2c3f81b84531c42a6077b9bddac9e4d55f76453180ee18bdcdce7e87a739f437e115c1e566d036
+Description: Configuração acessível do Emacs para pessoas com deficiência visual
+ Fornece uma configuração completa do Emacs otimizada para acessibilidade,
+ incluindo suporte a leitores de tela, navegação aprimorada e integrações
+ com tecnologias assistivas.
+
+Package: emacs-a11y-launchers
+Architecture: all
+Version: 0.1.0
+Maintainer: Akira <akira@example.com>
+Depends: emacs-a11y-config, bash
+Filename: pool/main/emacs-a11y-launchers_0.1.0_all.deb
+Size: 3010
+MD5sum: 913914e78d4005b3e52108e031ee3618
+SHA1: 9729581285a8d1d69749d992017a2ccd41cdcfa7
+SHA256: dd4d0ac2b6494734f7c813b8f8ab16d72fc522eabea51afd90e140cc1eb269d9
+SHA512: de79ca620fd30161f291d00e8a85660eb91c49436f7bd094faef17a07b9ca303965c13f1abdbffb8ef1fd0077564655ff05cef869e1edadf37c6386c47ae6c2d
+Description: Lançadores e integrações para Emacs a11y
+ Fornece scripts lançadores especializados para iniciar o Emacs com
+ suporte a tecnologias assistivas, integração com espeakup e utilitários
+ de controle de áudio.
+
