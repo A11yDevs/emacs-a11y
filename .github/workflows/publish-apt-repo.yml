@@ -116,19 +116,39 @@ jobs:
             -o APT::FTPArchive::Release::Components="main" \
             release "${REPO_ROOT}/dists/stable" > "${REPO_ROOT}/dists/stable/Release"
 
-          gpg --batch --yes --pinentry-mode loopback \
-            --passphrase "${APT_GPG_PASSPHRASE}" \
-            --local-user "${APT_GPG_KEY_FINGERPRINT}" \
-            --detach-sign --armor \
-            -o "${REPO_ROOT}/dists/stable/Release.gpg" \
-            "${REPO_ROOT}/dists/stable/Release"
+          # Normaliza segredo para evitar newline/carriage-return acidental em GitHub Secrets.
+          CLEAN_PASSPHRASE="${APT_GPG_PASSPHRASE%$'\n'}"
+          CLEAN_PASSPHRASE="${CLEAN_PASSPHRASE%$'\r'}"
 
-          gpg --batch --yes --pinentry-mode loopback \
-            --passphrase "${APT_GPG_PASSPHRASE}" \
-            --local-user "${APT_GPG_KEY_FINGERPRINT}" \
-            --clearsign \
-            -o "${REPO_ROOT}/dists/stable/InRelease" \
-            "${REPO_ROOT}/dists/stable/Release"
+          SIGN_BASE_ARGS=(--batch --yes --local-user "${APT_GPG_KEY_FINGERPRINT}")
+
+          if [[ -n "${CLEAN_PASSPHRASE}" ]]; then
+            SIGN_SECRET_ARGS=(--pinentry-mode loopback --passphrase-fd 0)
+          else
+            SIGN_SECRET_ARGS=()
+          fi
+
+          sign_file() {
+            local output="$1"
+            local input="$2"
+            shift 2
+            local mode_args=("$@")
+
+            if [[ -n "${CLEAN_PASSPHRASE}" ]]; then
+              if ! printf '%s' "${CLEAN_PASSPHRASE}" | gpg "${SIGN_BASE_ARGS[@]}" "${SIGN_SECRET_ARGS[@]}" "${mode_args[@]}" -o "${output}" "${input}"; then
+                echo "Falha ao assinar com passphrase. Verifique o secret APT_GPG_PASSPHRASE."
+                exit 1
+              fi
+            else
+              if ! gpg "${SIGN_BASE_ARGS[@]}" "${mode_args[@]}" -o "${output}" "${input}"; then
+                echo "Falha ao assinar com chave sem passphrase. Se sua chave tiver senha, configure APT_GPG_PASSPHRASE."
+                exit 1
+              fi
+            fi
+          }
+
+          sign_file "${REPO_ROOT}/dists/stable/Release.gpg" "${REPO_ROOT}/dists/stable/Release" --detach-sign --armor
+          sign_file "${REPO_ROOT}/dists/stable/InRelease" "${REPO_ROOT}/dists/stable/Release" --clearsign
 
           gpg --batch --yes --armor --export "${APT_GPG_KEY_FINGERPRINT}" > "${REPO_ROOT}/a11y-emacs-archive-keyring.asc"
           gpg --batch --yes --export "${APT_GPG_KEY_FINGERPRINT}" > "${REPO_ROOT}/a11y-emacs-archive-keyring.gpg"
