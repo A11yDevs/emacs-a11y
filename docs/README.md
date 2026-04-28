@@ -76,6 +76,25 @@ sudo dpkg -i ../dist/*.deb
 /usr/share/a11y-emacs/emacs-a11y.sh
 ```
 
+### Publicação de Releases
+
+O repositório possui automação para publicar pacotes no GitHub Releases com versão identificável.
+
+1. Garanta que o estado atual está pronto para release.
+2. Crie e envie uma tag semântica no formato `vX.Y.Z`.
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+3. O workflow em `.github/workflows/release-packages.yml` irá:
+  - atualizar o campo `Version` dos pacotes para a versão da tag;
+  - gerar os arquivos `.deb` em `dist/`;
+  - publicar os artefatos no GitHub Releases com `SHA256SUMS.txt`.
+
+Para baixar os pacotes versionados depois da publicação, acesse a aba Releases do repositório.
+
 ### Arquivos Importantes
 
 - **constitution.txt** - Diretrizes do projeto

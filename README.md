@@ -40,6 +40,24 @@ Dois pacotes Debian estão disponíveis em `dist/`:
 | `emacs-a11y-config` | 2.7 KB | Configuração principal e módulos |
 | `emacs-a11y-launchers` | 2.1 KB | Scripts de execução e integrações |
 
+## ⬇️ Download por Versão (GitHub Releases)
+
+Os pacotes `.deb` são publicados automaticamente no GitHub Releases quando uma tag no formato `vX.Y.Z` é enviada.
+
+Exemplo de publicação:
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Arquivos publicados em cada release:
+- `emacs-a11y-config_<versao>_all.deb`
+- `emacs-a11y-launchers_<versao>_all.deb`
+- `SHA256SUMS.txt`
+
+Após a publicação, baixe os arquivos na página de Releases do repositório.
+
 ### Instalação
 
 ```bash
