@@ -10,6 +10,8 @@
 
 Para instalar e atualizar com comandos APT padrão, adicione o repositório:
 
+Se a URL retornar 404, habilite o GitHub Pages em Settings > Pages usando a branch `gh-pages` na pasta `/(root)`.
+
 ```bash
 echo "deb [trusted=yes] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
 sudo apt update

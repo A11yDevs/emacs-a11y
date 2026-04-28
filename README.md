@@ -65,6 +65,11 @@ Além dos assets de release, o projeto publica automaticamente um repositório A
 URL do repositório APT:
 - https://a11ydevs.github.io/emacs-a11y/debian
 
+Se a URL retornar 404, habilite em GitHub Settings > Pages:
+- Source: Deploy from a branch
+- Branch: gh-pages
+- Folder: /(root)
+
 Configurar no Debian/Ubuntu:
 
 ```bash
