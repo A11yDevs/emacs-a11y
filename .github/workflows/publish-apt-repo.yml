@@ -14,6 +14,9 @@ permissions:
 jobs:
   publish-apt-repo:
     runs-on: ubuntu-latest
+    env:
+      APT_GPG_PRIVATE_KEY_B64: ${{ secrets.APT_GPG_PRIVATE_KEY_B64 }}
+      APT_GPG_PASSPHRASE: ${{ secrets.APT_GPG_PASSPHRASE }}
 
     steps:
       - name: Checkout
@@ -61,7 +64,33 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends apt-utils
+          sudo apt-get install -y --no-install-recommends apt-utils gnupg
+
+      - name: Import GPG key for APT signing
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${APT_GPG_PRIVATE_KEY_B64}" ]]; then
+            echo "Secret APT_GPG_PRIVATE_KEY_B64 não configurado"
+            exit 1
+          fi
+
+          export GNUPGHOME="$(mktemp -d)"
+          chmod 700 "${GNUPGHOME}"
+          echo "GNUPGHOME=${GNUPGHOME}" >> "${GITHUB_ENV}"
+
+          echo "${APT_GPG_PRIVATE_KEY_B64}" | base64 -d > /tmp/apt-private.key
+          gpg --batch --import /tmp/apt-private.key
+
+          KEY_FINGERPRINT="$(gpg --batch --list-secret-keys --with-colons | awk -F: '/^fpr:/ {print $10; exit}')"
+
+          if [[ -z "${KEY_FINGERPRINT}" ]]; then
+            echo "Nenhuma chave secreta GPG foi importada"
+            exit 1
+          fi
+
+          echo "APT_GPG_KEY_FINGERPRINT=${KEY_FINGERPRINT}" >> "${GITHUB_ENV}"
 
       - name: Build static APT repository
         shell: bash
@@ -87,6 +116,23 @@ jobs:
             -o APT::FTPArchive::Release::Components="main" \
             release "${REPO_ROOT}/dists/stable" > "${REPO_ROOT}/dists/stable/Release"
 
+          gpg --batch --yes --pinentry-mode loopback \
+            --passphrase "${APT_GPG_PASSPHRASE}" \
+            --local-user "${APT_GPG_KEY_FINGERPRINT}" \
+            --detach-sign --armor \
+            -o "${REPO_ROOT}/dists/stable/Release.gpg" \
+            "${REPO_ROOT}/dists/stable/Release"
+
+          gpg --batch --yes --pinentry-mode loopback \
+            --passphrase "${APT_GPG_PASSPHRASE}" \
+            --local-user "${APT_GPG_KEY_FINGERPRINT}" \
+            --clearsign \
+            -o "${REPO_ROOT}/dists/stable/InRelease" \
+            "${REPO_ROOT}/dists/stable/Release"
+
+          gpg --batch --yes --armor --export "${APT_GPG_KEY_FINGERPRINT}" > "${REPO_ROOT}/a11y-emacs-archive-keyring.asc"
+          gpg --batch --yes --export "${APT_GPG_KEY_FINGERPRINT}" > "${REPO_ROOT}/a11y-emacs-archive-keyring.gpg"
+
           cat > "${REPO_ROOT}/index.html" <<'HTML'
           <!doctype html>
           <html lang="pt-BR">
@@ -98,7 +144,8 @@ jobs:
             <body>
               <h1>emacs-a11y APT Repository</h1>
               <p>Use no Debian/Ubuntu:</p>
-              <pre>echo "deb [trusted=yes] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+              <pre>curl -fsSL https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg | sudo tee /usr/share/keyrings/emacs-a11y-archive-keyring.gpg >/dev/null
+              echo "deb [signed-by=/usr/share/keyrings/emacs-a11y-archive-keyring.gpg] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
               sudo apt update
               sudo apt install emacs-a11y-config emacs-a11y-launchers</pre>
             </body>

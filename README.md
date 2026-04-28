@@ -65,6 +65,9 @@ Além dos assets de release, o projeto publica automaticamente um repositório A
 URL do repositório APT:
 - https://a11ydevs.github.io/emacs-a11y/debian
 
+Chave pública do repositório:
+- https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg
+
 Se a URL retornar 404, habilite em GitHub Settings > Pages:
 - Source: Deploy from a branch
 - Branch: gh-pages
@@ -73,7 +76,8 @@ Se a URL retornar 404, habilite em GitHub Settings > Pages:
 Configurar no Debian/Ubuntu:
 
 ```bash
-echo "deb [trusted=yes] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+curl -fsSL https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg | sudo tee /usr/share/keyrings/emacs-a11y-archive-keyring.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/emacs-a11y-archive-keyring.gpg] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
 sudo apt update
 ```
 
@@ -89,6 +93,12 @@ Atualizar pacotes:
 sudo apt update
 sudo apt upgrade
 ```
+
+### Segredos Necessários no GitHub
+
+Para assinar o repositório APT no workflow, configure em Settings > Secrets and variables > Actions:
+- `APT_GPG_PRIVATE_KEY_B64`: chave privada GPG em Base64
+- `APT_GPG_PASSPHRASE`: passphrase da chave (use vazio se a chave não tiver senha)
 
 ### Instalação
 
