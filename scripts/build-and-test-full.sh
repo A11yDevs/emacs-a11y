@@ -10,7 +10,8 @@
 
 set -euo pipefail
 
-PROJECT_DIR="/Users/akira/dados/dev/emacs-a11y"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_DIR"
 
 echo "╔════════════════════════════════════════════════════════════╗"
