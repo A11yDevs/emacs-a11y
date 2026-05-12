@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>emacs-a11y APT Repository</title>
+  </head>
+  <body>
+    <h1>emacs-a11y APT Repository</h1>
+    <p>Use no Debian/Ubuntu:</p>
+    <pre>curl -fsSL https://a11ydevs.github.io/emacs-a11y/debian/a11y-emacs-archive-keyring.gpg | sudo tee /usr/share/keyrings/emacs-a11y-archive-keyring.gpg >/dev/null
+    echo "deb [signed-by=/usr/share/keyrings/emacs-a11y-archive-keyring.gpg] https://a11ydevs.github.io/emacs-a11y/debian stable main" | sudo tee /etc/apt/sources.list.d/emacs-a11y.list
+    sudo apt update
+    sudo apt install emacs-a11y-config emacs-a11y-launchers</pre>
+  </body>
+</html>

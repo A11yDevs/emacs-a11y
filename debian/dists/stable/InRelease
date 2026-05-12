@@ -1,0 +1,40 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Architectures: all
+Codename: stable
+Components: main
+Date: Tue, 12 May 2026 22:11:49 +0000
+Label: emacs-a11y
+Origin: A11yDevs
+Suite: stable
+MD5Sum:
+ 291bd5cf6e32705e9960994182c295a9              140 Release
+ 6646b97882fa0c451eb679dec37f24bc             1481 main/binary-all/Packages
+ 8dd7b1500cd7aaf49a25a88ea29e0c9a              839 main/binary-all/Packages.gz
+SHA1:
+ 27e821580e28bccf48776da8a865c01d6f08c5a6              140 Release
+ 1728add56cfbbae2428a45137d7c6cb1c212299d             1481 main/binary-all/Packages
+ 679fbae0e851c4e0100edc3e1e2b3c0da12ef04a              839 main/binary-all/Packages.gz
+SHA256:
+ d6952ce53272ef5592f46e70584ebb5846fb9772ca3fb71eb4aae5b0ac51e770              140 Release
+ 4c0bf11024cbe714c3124bffb01f9fba0e565d3897508cbc71f50d2c3e1c9058             1481 main/binary-all/Packages
+ 2705b9a6323764b8fc2fcb11d572ee3aee2b572899423523296213e9c820d790              839 main/binary-all/Packages.gz
+SHA512:
+ f4e5f36a64e5bd0f59bb626ab762bc90a94707a565a11e2459cf22a3010ecefcaa198c14a8c610a1f536de5f1a64e070eecdbdf3ff0213ab5d25f4e82d6bd5b4              140 Release
+ d569131106261ffe2421997e80b1d781def9fb05fa38ae70b7682436d3ddb04b93ca8144a0e942dffc9fd3948056f589257db2fe27a5c94492face705a6a5b9f             1481 main/binary-all/Packages
+ 31dcb42eb8817582765f82f632f7a97d4f2b73b4f0571c7faed007b63b32fef45a2792e7f2a502d7597f36a7c0b9b13744b92fcefed35316cb18122f285d9492              839 main/binary-all/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEX70eqcAO/L+QuzEST25epEOpmuQFAmoDpaYACgkQT25epEOp
+muTfGgwA3u4R4gAwXJdHhoDMH4fy7lpkfWzHZJcHMupvGAauyzmqWlo8httFTfMr
+2GidkFcerMcRs1cc+RH07/sU1H6C1JvfFRHD+ZnPXRmdx26vRS7imD7jmWSTawOa
+m2ZX2hWKwcINRVikixoAjLe4teknnnv6A+M7uGiORN/0qPZ3NySCTP53Fbs/0VZS
+t0dtuKSz1FlOe1T6yhih3zGuRIdBWQ8+3XqL89Qls/d3Rgd4FsZoGmAd5JRsRY/R
+OZah3pTZcA8Nvc1Sio1Zxq0QTwP3SVJsmhRgvpOZvFquokoQhk4vElMaoqbqCn+q
+80xnipLSjHlZrhpm2kvF+bTbL1/gkwQNhoCuuxdItqhRzvwhFXcNC44kfdHRrqMa
+446CM+/InM4jR7w35Ek1seURV+yaG+4UR8FMrXdzoN1VDJM/jnWokZ6sxHXEhZ3L
+mJu1OOpBJvQObXg/aYFAWoatr4sVdP8DnxctMPQ+Isfv+0seVYeNC9lVS4kjvuSx
+d6zL6Y2u
+=NAGh
+-----END PGP SIGNATURE-----
